@@ -80,7 +80,7 @@ class VideoScreen extends StatelessWidget {
             controller: PageController(initialPage: 0, viewportFraction: 1),
             scrollDirection: Axis.vertical,
             itemBuilder: (context, index) {
-              final data = videoController.videoList[index];
+              // final data = videoController.videoList[index];
               return Stack(
                 children: [
                   PageView.builder(

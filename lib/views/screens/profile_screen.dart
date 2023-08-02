@@ -34,6 +34,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             return const Center(
               child: CircularProgressIndicator(),
             );
+          } else {
+            print(controller.user);
           }
           return Scaffold(
             appBar: AppBar(
@@ -178,10 +180,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 },
                                 child: Text(
                                   widget.uid == authController.user.uid
-                                      ? 'Sign Out'
+                                      ? 'Đăng xuất'
                                       : controller.user['isFollowing']
-                                          ? 'Unfollow'
-                                          : 'Follow',
+                                          ? 'Bỏ theo dõi'
+                                          : 'Theo dõi',
                                   style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,

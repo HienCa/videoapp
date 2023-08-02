@@ -25,13 +25,13 @@ class LoginScreen extends StatelessWidget {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            const Text(
-              'Login',
-              style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+            // const Text(
+            //   'Login',
+            //   style: TextStyle(
+            //     fontSize: 25,
+            //     fontWeight: FontWeight.w700,
+            //   ),
+            // ),
             const SizedBox(
               height: 25,
             ),
@@ -52,7 +52,7 @@ class LoginScreen extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: TextInputField(
                 controller: _passwordController,
-                labelText: 'Password',
+                labelText: 'Mật khẩu',
                 icon: Icons.lock,
                 isObscure: true,
               ),
@@ -76,7 +76,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                 child: const Center(
                   child: Text(
-                    'Login',
+                    'ĐĂNG NHẬP',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -92,7 +92,7 @@ class LoginScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  'Don\'t have an account? ',
+                  'Bạn chưa có tài khoản? ',
                   style: TextStyle(
                     fontSize: 20,
                   ),
@@ -104,7 +104,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    'Register',
+                    'Đăng ký',
                     style: TextStyle(fontSize: 20, color: buttonColor),
                   ),
                 ),

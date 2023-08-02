@@ -26,23 +26,36 @@ class SignupScreen extends StatelessWidget {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            const Text(
-              'Register',
-              style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+            // const Text(
+            //   'Đăng ký',
+            //   style: TextStyle(
+            //     fontSize: 25,
+            //     fontWeight: FontWeight.w700,
+            //   ),
+            // ),
             const SizedBox(
               height: 25,
             ),
             Stack(
               children: [
-                const CircleAvatar(
-                  radius: 64,
-                  backgroundImage: NetworkImage(
-                      'https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png'),
-                  backgroundColor: Colors.black,
+                // const CircleAvatar(
+                //   radius: 64,
+                //   backgroundImage: NetworkImage(
+                //       'https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png'),
+                //   backgroundColor: Colors.black,
+                // ),
+                InkWell(
+                  onTap: () {
+                    authController.pickImage();
+                  },
+                  child: ClipOval(
+                    child: Image.asset(
+                      "assets/images/user-default.png",
+                      width: 150,
+                      height: 150,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
                 Positioned(
                   bottom: -10,
@@ -51,6 +64,7 @@ class SignupScreen extends StatelessWidget {
                     onPressed: () => authController.pickImage(),
                     icon: const Icon(
                       Icons.add_a_photo,
+                      color: Colors.redAccent,
                     ),
                   ),
                 ),
@@ -64,7 +78,7 @@ class SignupScreen extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: TextInputField(
                 controller: _usernameController,
-                labelText: 'Username',
+                labelText: 'Tên người dùng',
                 icon: Icons.person,
               ),
             ),
@@ -88,7 +102,7 @@ class SignupScreen extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: TextInputField(
                 controller: _passwordController,
-                labelText: 'Password',
+                labelText: 'Mật khẩu',
                 icon: Icons.lock,
                 isObscure: true,
               ),
@@ -114,7 +128,7 @@ class SignupScreen extends StatelessWidget {
                 ),
                 child: const Center(
                   child: Text(
-                    'Register',
+                    'ĐĂNG KÝ',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -130,7 +144,7 @@ class SignupScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  'Already have an account? ',
+                  'Bạn đã có tài khoản rồi? ',
                   style: TextStyle(
                     fontSize: 20,
                   ),
@@ -142,7 +156,7 @@ class SignupScreen extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    'Login',
+                    'Đăng nhập',
                     style: TextStyle(fontSize: 20, color: buttonColor),
                   ),
                 ),
