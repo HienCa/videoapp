@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:videoapp/constants.dart';
 import 'package:videoapp/controllers/video_controller.dart';
 import 'package:videoapp/views/screens/comment_screen.dart';
+import 'package:videoapp/views/screens/profile_screen.dart';
 import 'package:videoapp/views/widgets/circle_animation.dart';
 import 'package:videoapp/views/widgets/video_player_iten.dart';
 import 'package:get/get.dart';
@@ -10,31 +11,39 @@ class VideoScreen extends StatelessWidget {
   VideoScreen({Key? key}) : super(key: key);
 
   final VideoController videoController = Get.put(VideoController());
-  buildProfile(String profilePhoto) {
-    return SizedBox(
-      width: 60,
-      height: 60,
-      child: Stack(children: [
-        Positioned(
-          left: 5,
-          child: Container(
-            width: 50,
-            height: 50,
-            padding: const EdgeInsets.all(1),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(25),
-              child: Image(
-                image: NetworkImage(profilePhoto),
-                fit: BoxFit.cover,
+  buildProfile(String profilePhoto, context, uid) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProfileScreen(uid: uid)));
+      },
+      child: SizedBox(
+        width: 60,
+        height: 60,
+        child: Stack(children: [
+          Positioned(
+            left: 5,
+            child: Container(
+              width: 50,
+              height: 50,
+              padding: const EdgeInsets.all(1),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(25),
+                child: Image(
+                  image: NetworkImage(profilePhoto),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-        )
-      ]),
+          )
+        ]),
+      ),
     );
   }
 
@@ -154,15 +163,14 @@ class VideoScreen extends StatelessWidget {
                                     ),
                                     Container(
                                       width: 100,
-                                      margin: EdgeInsets.only(
-                                          top: size.height / 3),
+                                      margin:
+                                          EdgeInsets.only(top: size.height / 3),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
                                           buildProfile(
-                                            data.profilePhoto,
-                                          ),
+                                              data.profilePhoto, context, data.uid),
                                           Column(
                                             children: [
                                               InkWell(
@@ -236,9 +244,19 @@ class VideoScreen extends StatelessWidget {
                                               )
                                             ],
                                           ),
-                                          CircleAnimation(
-                                            child: buildMusicAlbum(
-                                                data.profilePhoto),
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          ProfileScreen(
+                                                              uid: data.uid)));
+                                            },
+                                            child: CircleAnimation(
+                                              child: buildMusicAlbum(
+                                                  data.profilePhoto),
+                                            ),
                                           ),
                                         ],
                                       ),

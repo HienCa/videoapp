@@ -37,10 +37,9 @@ class AuthController extends GetxController {
     final pickedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
-      Get.snackbar('Tải lên hình ảnh', 'Bạn đã tải lên hình ảnh thành công!');
+      Get.snackbar('Upload Avatar', 'Bạn đã tải lên avatar thành công!');
     }
     _pickedImage = Rx<File?>(File(pickedImage!.path));
-    // print(_pickedImage);
   }
 
   // upload to firebase storage
@@ -86,9 +85,14 @@ class AuthController extends GetxController {
       } else {
         Get.snackbar(
           'Đăng ký thất bại!',
-          'Vui lòng điền đầy đủ các trường bên dưới, bao gồm hình ảnh!',
+          'Vui lòng điền đầy đủ các trường bên dưới!',
         );
       }
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar(
+        'Đăng ký thất bại!',
+        e.message ?? 'Có lỗi xãy ra trong quá trình tạo tài khoản.',
+      );
     } catch (e) {
       Get.snackbar(
         'Đăng ký thất bại!',
@@ -105,14 +109,18 @@ class AuthController extends GetxController {
       } else {
         Get.snackbar(
           'Đăng nhập thất bại!',
-          'Vui lòng cung cấp đầy đủ thông tin tài khoản!',
+          'Vui lòng cung cấp đầy đủ tài khoản và mật khẩu!',
         );
       }
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar(
+        'Đăng nhập thất bại!',
+        e.message ?? 'Có lỗi xãy ra trong quá trình đăng nhập.',
+      );
     } catch (e) {
       Get.snackbar(
         'Đăng nhập thất bại!',
-        'Tài khoản không chính xác!',
-        // e.toString(),
+        e.toString(),
       );
     }
   }
