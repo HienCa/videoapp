@@ -4,6 +4,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
 import 'package:videoapp/constants.dart';
 import 'package:videoapp/controllers/profile_controller.dart';
+import 'package:videoapp/views/screens/update_profile_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
@@ -39,186 +40,254 @@ class _ProfileScreenState extends State<ProfileScreen> {
           }
           return Scaffold(
             appBar: AppBar(
-              backgroundColor: Colors.black12,
+              backgroundColor: backgroundColor,
               leading: const Icon(
                 Icons.person_add_alt_1_outlined,
+                color: Colors.black54,
               ),
               actions: const [
-                Icon(Icons.more_horiz),
-              ],
-              title: Text(
-                controller.user['name'],
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Icon(
+                    Icons.menu,
+                    color: Colors.black54,
+                  ),
                 ),
-              ),
+              ],
             ),
             body: SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ClipOval(
-                                child: CachedNetworkImage(
-                                  fit: BoxFit.cover,
-                                  imageUrl: controller.user['profilePhoto'],
-                                  height: 100,
-                                  width: 100,
-                                  placeholder: (context, url) =>
-                                      const CircularProgressIndicator(),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(
-                                    Icons.error,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    controller.user['following'],
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ClipOval(
+                                  child: CachedNetworkImage(
+                                    fit: BoxFit.cover,
+                                    imageUrl: controller.user['profilePhoto'],
+                                    height: 100,
+                                    width: 100,
+                                    placeholder: (context, url) =>
+                                        const CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(
+                                      Icons.error,
                                     ),
                                   ),
-                                  const SizedBox(height: 5),
-                                  const Text(
-                                    'Following',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Container(
-                                color: Colors.black54,
-                                width: 1,
-                                height: 15,
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 15,
-                                ),
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                    controller.user['followers'],
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  const Text(
-                                    'Followers',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Container(
-                                color: Colors.black54,
-                                width: 1,
-                                height: 15,
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 15,
-                                ),
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                    controller.user['likes'],
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  const Text(
-                                    'Likes',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Container(
-                            width: 140,
-                            height: 47,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black12,
-                              ),
+                                )
+                              ],
                             ),
-                            child: Center(
-                              child: InkWell(
-                                onTap: () {
-                                  if (widget.uid == authController.user.uid) {
-                                    authController.signOut();
-                                  } else {
-                                    controller.followUser();
-                                  }
-                                },
-                                child: Text(
-                                  widget.uid == authController.user.uid
-                                      ? 'Đăng xuất'
-                                      : controller.user['isFollowing']
-                                          ? 'Bỏ theo dõi'
-                                          : 'Theo dõi',
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '@${controller.user['name']}',
                                   style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 24,
+                                      color: textColor),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
+                                  children: [
+                                    Text(
+                                      controller.user['following'],
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: textColor),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    const Text(
+                                      'Đang follow',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  color: Colors.black54,
+                                  width: 1,
+                                  height: 15,
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 15,
                                   ),
                                 ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      controller.user['followers'],
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: textColor),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    const Text(
+                                      'Followers',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  color: Colors.black54,
+                                  width: 1,
+                                  height: 15,
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 15,
+                                  ),
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      controller.user['likes'],
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: textColor),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    const Text(
+                                      'Thích',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  width: 140,
+                                  height: 47,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Colors.grey[300],
+                                  ),
+                                  child: Center(
+                                    child: InkWell(
+                                      onTap: () {
+                                        if (widget.uid ==
+                                            authController.user.uid) {
+                                          //sửa hồ sơ
+                                          // authController.signOut();
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      UpdateProfile(
+                                                          uid: authController
+                                                              .user.uid)));
+                                        } else {
+                                          // chức năng kết bạn
+                                          // controller.followUser();
+                                        }
+                                      },
+                                      child: widget.uid ==
+                                              authController.user.uid
+                                          ? const Text(
+                                              'Sửa hồ sơ',
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: textColor),
+                                            )
+                                          : const Text(
+                                              'Kết bạn',
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: textColor),
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: 140,
+                                  height: 47,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Colors.grey[300],
+                                  ),
+                                  child: Center(
+                                    child: InkWell(
+                                      onTap: () {
+                                        if (widget.uid ==
+                                            authController.user.uid) {
+                                          authController.signOut();
+                                        } else {
+                                          controller.followUser();
+                                        }
+                                      },
+                                      child: Text(
+                                        widget.uid == authController.user.uid
+                                            ? 'Đăng xuất'
+                                            : controller.user['isFollowing']
+                                                ? 'Bỏ theo dõi'
+                                                : 'Theo dõi',
+                                        style: const TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                            color: textColor),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 25,
+                            ),
+                            // video list
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: controller.user['thumbnails'].length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                childAspectRatio: 1,
+                                crossAxisSpacing: 5,
                               ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 25,
-                          ),
-                          // video list
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: controller.user['thumbnails'].length,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 1,
-                              crossAxisSpacing: 5,
-                            ),
-                            itemBuilder: (context, index) {
-                              String thumbnail =
-                                  controller.user['thumbnails'][index];
-                              return CachedNetworkImage(
-                                imageUrl: thumbnail,
-                                fit: BoxFit.cover,
-                              );
-                            },
-                          )
-                        ],
+                              itemBuilder: (context, index) {
+                                String thumbnail =
+                                    controller.user['thumbnails'][index];
+                                return CachedNetworkImage(
+                                  imageUrl: thumbnail,
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

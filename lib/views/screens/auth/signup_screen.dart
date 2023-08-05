@@ -1,7 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:videoapp/constants.dart';
 import 'package:videoapp/views/screens/auth/login_screen.dart';
-import 'package:videoapp/views/widgets/text_input_field.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SignupScreen extends StatelessWidget {
   SignupScreen({Key? key}) : super(key: key);
@@ -19,34 +20,22 @@ class SignupScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Video App',
-              style: TextStyle(
-                fontSize: 35,
+              'Video CVG',
+              style:  GoogleFonts.bungee(
+                fontSize: 40,
                 color: buttonColor,
                 fontWeight: FontWeight.w900,
               ),
             ),
-            // const Text(
-            //   'Đăng ký',
-            //   style: TextStyle(
-            //     fontSize: 25,
-            //     fontWeight: FontWeight.w700,
-            //   ),
-            // ),
             const SizedBox(
               height: 25,
             ),
             Stack(
               children: [
-                // const CircleAvatar(
-                //   radius: 64,
-                //   backgroundImage: NetworkImage(
-                //       'https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png'),
-                //   backgroundColor: Colors.black,
-                // ),
                 InkWell(
                   onTap: () {
                     authController.pickImage();
+                    
                   },
                   child: ClipOval(
                     child: Image.asset(
@@ -75,23 +64,53 @@ class SignupScreen extends StatelessWidget {
             ),
             Container(
               width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: Colors.grey),
+                  borderRadius: const BorderRadius.all(Radius.circular(5))),
               margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextInputField(
+              child: TextField(
                 controller: _usernameController,
-                labelText: 'Tên người dùng',
-                icon: Icons.person,
+                style: const TextStyle(color: textColor),
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(width: 1),
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  prefixIcon: Icon(
+                    Icons.lock,
+                    color: Colors.redAccent,
+                  ),
+                  label: Text("Tên người dùng",
+                      style: TextStyle(color: Colors.black)),
+                  hintStyle: TextStyle(
+                      fontWeight: FontWeight.w300, color: Colors.grey),
+                ),
               ),
             ),
             const SizedBox(
               height: 15,
             ),
+
             Container(
               width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: Colors.grey),
+                  borderRadius: const BorderRadius.all(Radius.circular(5))),
               margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextInputField(
+              child: TextField(
                 controller: _emailController,
-                labelText: 'Email',
-                icon: Icons.email,
+                style: const TextStyle(color: textColor),
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(width: 1),
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  prefixIcon: Icon(
+                    Icons.lock,
+                    color: Colors.redAccent,
+                  ),
+                  label: Text("Email", style: TextStyle(color: Colors.black)),
+                  hintStyle: TextStyle(
+                      fontWeight: FontWeight.w300, color: Colors.grey),
+                ),
               ),
             ),
             const SizedBox(
@@ -99,12 +118,26 @@ class SignupScreen extends StatelessWidget {
             ),
             Container(
               width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: Colors.grey),
+                  borderRadius: const BorderRadius.all(Radius.circular(5))),
               margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextInputField(
+              child: TextField(
                 controller: _passwordController,
-                labelText: 'Mật khẩu',
-                icon: Icons.lock,
-                isObscure: true,
+                style: const TextStyle(color: textColor),
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(width: 1),
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  prefixIcon: Icon(
+                    Icons.lock,
+                    color: Colors.redAccent,
+                  ),
+                  label:
+                      Text("Mật khẩu", style: TextStyle(color: Colors.black)),
+                  hintStyle: TextStyle(
+                      fontWeight: FontWeight.w300, color: Colors.grey),
+                ),
               ),
             ),
             const SizedBox(
@@ -145,9 +178,7 @@ class SignupScreen extends StatelessWidget {
               children: [
                 const Text(
                   'Bạn đã có tài khoản rồi? ',
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
+                  style: TextStyle(fontSize: 20, color: Colors.blueAccent),
                 ),
                 InkWell(
                   onTap: () => Navigator.of(context).push(

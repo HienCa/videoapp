@@ -14,10 +14,8 @@ class VideoScreen extends StatelessWidget {
   buildProfile(String profilePhoto, context, uid) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ProfileScreen(uid: uid)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ProfileScreen(uid: uid)));
       },
       child: SizedBox(
         width: 60,
@@ -169,8 +167,8 @@ class VideoScreen extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          buildProfile(
-                                              data.profilePhoto, context, data.uid),
+                                          buildProfile(data.profilePhoto,
+                                              context, data.uid),
                                           Column(
                                             children: [
                                               InkWell(

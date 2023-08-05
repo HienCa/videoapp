@@ -89,10 +89,10 @@ class AddVideoScreen extends StatelessWidget {
             decoration: BoxDecoration(color: buttonColor),
             child: const Center(
               child: Text(
-                'Thêm Video',
+                'Tải lên Video',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.black,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),

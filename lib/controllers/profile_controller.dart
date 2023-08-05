@@ -1,5 +1,12 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:videoapp/models/user.dart' as model;
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:videoapp/constants.dart';
 
 class ProfileController extends GetxController {
@@ -7,10 +14,48 @@ class ProfileController extends GetxController {
   Map<String, dynamic> get user => _user.value;
 
   final Rx<String> _uid = "".obs;
+  late Rx<File?> _pickedImage = Rx<File?>(null);
+
+  File? get profilePhoto => _pickedImage.value;
+
+  void pickImage() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      Get.snackbar('Upload Avatar', 'Bạn đã tải lên avatar thành công!');
+    }
+    _pickedImage = Rx<File?>(File(pickedImage!.path));
+    print("111111111111111111111111111111111111111111");
+  }
 
   updateUserId(String uid) {
     _uid.value = uid;
     getUserData();
+  }
+
+  getCurrentUserData() async {
+    try {
+      DocumentSnapshot userDoc =
+          await firestore.collection('users').doc(_uid.value).get();
+      if (userDoc.exists) {
+        final userData = userDoc.data();
+        if (userData != null && userData is Map<String, dynamic>) {
+          String name = userData['name'] ?? '';
+          String email = userData['email'] ?? '';
+          String profilePhoto = userData['profilePhoto'] ?? '';
+          return model.User(
+            name: name,
+            email: email,
+            uid: _uid.value,
+            profilePhoto: profilePhoto,
+          );
+        }
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+      return null; // Return null in case of any error
+    }
   }
 
   getUserData() async {
@@ -121,5 +166,103 @@ class ProfileController extends GetxController {
     }
     _user.value.update('isFollowing', (value) => !value);
     update();
+  }
+
+  Future<String> _uploadToStorage(File image) async {
+    Reference ref = firebaseStorage
+        .ref()
+        .child('profilePics')
+        .child(firebaseAuth.currentUser!.uid);
+
+    UploadTask uploadTask = ref.putFile(image);
+    TaskSnapshot snap = await uploadTask;
+    String downloadUrl = await snap.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  updateProfileUser(String uid, String name, File? profilePhoto) async {
+    var doc = await firestore.collection('users').doc(_uid.value).get();
+    String downloadUrl = "";
+    print(_uid + name + profilePhoto.toString());
+    try {
+      if (!doc.exists) {
+        // Tạo tài liệu người dùng mặc định nếu không tồn tại
+        await firestore.collection('users').doc(_uid.value).set({});
+      }
+
+      if (profilePhoto != null) {
+        // Xóa ảnh cũ nếu có
+        await _deleteOldProfilePhoto(doc);
+
+        // Tải ảnh mới lên Firebase Storage và nhận URL
+        downloadUrl = await _uploadToStorage(profilePhoto);
+        // Cập nhật tên và URL hình đại diện vào tài liệu người dùng
+        await firestore
+            .collection('users')
+            .doc(_uid.value)
+            .update({'name': name, 'profilePhoto': downloadUrl});
+      } else {
+        // Cập nhật tên và URL hình đại diện vào tài liệu người dùng
+        await firestore
+            .collection('users')
+            .doc(_uid.value)
+            .update({'name': name});
+      }
+
+      // Get the reference to the 'videos' collection
+      CollectionReference videosCollection = firestore.collection('videos');
+
+      // Query all videos where 'uid' matches the current user's UID
+      QuerySnapshot videoQuerySnapshot =
+          await videosCollection.where('uid', isEqualTo: _uid.value).get();
+
+      // Loop through the query results and update the 'name' field for each video
+      for (DocumentSnapshot videoSnapshot in videoQuerySnapshot.docs) {
+        String videoId = videoSnapshot.id;
+        // Replace 'new_name_here' with the new name you want to set for each video
+        String newName = name;
+
+        // Update the 'name' field for the video
+        await videosCollection.doc(videoId).update({'username': newName, 'name':videoId});
+
+        print('Updated name for video with ID: $videoId');
+      }
+
+      update();
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar(
+        'Đăng ký thất bại!',
+        e.message ?? 'Có lỗi xãy.',
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Cập nhật thất bại!',
+        e.toString(),
+      );
+    }
+  }
+
+// Phương thức để xóa ảnh khỏi Firebase Storage
+  _deleteOldProfilePhoto(DocumentSnapshot doc) async {
+    if (doc.exists && doc.data() != null) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      String oldDownloadUrl = data['profilePhoto'];
+      if (oldDownloadUrl.isNotEmpty) {
+        try {
+          // Tạo tham chiếu đến file trong Firebase Storage
+          Reference storageRef =
+              FirebaseStorage.instance.refFromURL(oldDownloadUrl);
+
+          // Kiểm tra URL tải xuống để kiểm tra sự tồn tại của tệp
+          await storageRef.getDownloadURL();
+
+          // Nếu không xảy ra lỗi, tệp tồn tại và có thể xóa
+          await storageRef.delete();
+        } catch (e) {
+          // Xử lý lỗi nếu tệp không tồn tại hoặc có lỗi khác
+          print("Error deleting file: $e");
+        }
+      }
+    }
   }
 }

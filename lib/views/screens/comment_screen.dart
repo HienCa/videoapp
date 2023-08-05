@@ -29,7 +29,7 @@ class _CommentScreenState extends State<CommentScreen> {
       body: SingleChildScrollView(
         child: SizedBox(
           width: size.width,
-          height: size.height / 2,
+          height: size.height,
           child: Column(
             children: [
               Expanded(
@@ -57,7 +57,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                 comment.comment,
                                 style: const TextStyle(
                                   fontSize: 20,
-                                  color: Colors.white,
+                                  color: textColor,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -71,7 +71,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                 ),
                                 style: const TextStyle(
                                   fontSize: 12,
-                                  color: Colors.white,
+                                  color: textColor,
                                 ),
                               ),
                               const SizedBox(
@@ -81,7 +81,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                 '${comment.likes.length} thích',
                                 style: const TextStyle(
                                   fontSize: 12,
-                                  color: Colors.white,
+                                  color: textColor,
                                 ),
                               )
                             ],
@@ -95,7 +95,7 @@ class _CommentScreenState extends State<CommentScreen> {
                               color: comment.likes
                                       .contains(authController.user.uid)
                                   ? Colors.red
-                                  : Colors.white,
+                                  : textColor,
                             ),
                           ),
                         );
@@ -103,40 +103,45 @@ class _CommentScreenState extends State<CommentScreen> {
                 }),
               ),
               const Divider(),
-              ListTile(
-                title: TextFormField(
-                  controller: _commentController,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                  ),
-                  decoration: const InputDecoration(
-                    labelText: 'Bình luận',
-                    labelStyle: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                      ),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
-                ),
-                trailing: TextButton(
-                  onPressed: () =>
-                      commentController.postComment(_commentController.text),
-                  child: const Text(
-                    'Gửi',
-                    style: TextStyle(
+              Container(
+                decoration: BoxDecoration(color: Colors.grey[200], borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), topRight:Radius.circular(30))),
+                // height: 300,
+                // width: MediaQuery.sizeOf(context).width,
+                child: ListTile(
+                  title: TextFormField(
+                    controller: _commentController,
+                    style: const TextStyle(
                       fontSize: 16,
-                      color: Colors.white,
+                      color: textColor,
+                    ),
+                    decoration: const InputDecoration(
+                      labelText: 'Bình luận',
+                      labelStyle: TextStyle(
+                        fontSize: 20,
+                        color: textColor,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                        ),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  ),
+                  trailing: TextButton(
+                    onPressed: () =>
+                        commentController.postComment(_commentController.text),
+                    child: const Text(
+                      'Gửi',
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.red,
+                      ),
                     ),
                   ),
                 ),

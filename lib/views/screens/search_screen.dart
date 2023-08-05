@@ -3,7 +3,7 @@ import 'package:videoapp/controllers/search_controller.dart';
 import 'package:get/get.dart';
 import 'package:videoapp/models/user.dart';
 import 'package:videoapp/views/screens/profile_screen.dart';
-
+import 'package:videoapp/constants.dart';
 class SearchScreen extends StatelessWidget {
   SearchScreen({Key? key}) : super(key: key);
 
@@ -58,7 +58,8 @@ class SearchScreen extends StatelessWidget {
                         user.name,
                         style: const TextStyle(
                           fontSize: 18,
-                          color: Colors.white,
+                          color: textColor,
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                     ),

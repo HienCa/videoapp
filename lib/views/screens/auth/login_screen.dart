@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:videoapp/constants.dart';
 import 'package:videoapp/views/screens/auth/signup_screen.dart';
-import 'package:videoapp/views/widgets/text_input_field.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -17,31 +17,49 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            ClipOval(
+              child: Image.asset(
+                "assets/images/logo.jpg",
+                width: 150,
+                height: 150,
+                fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             Text(
-              'Video App',
-              style: TextStyle(
-                fontSize: 35,
+              'VIDEO CVG',
+              style: GoogleFonts.bungee(
+                fontSize: 24,
                 color: buttonColor,
                 fontWeight: FontWeight.w900,
               ),
             ),
-            // const Text(
-            //   'Login',
-            //   style: TextStyle(
-            //     fontSize: 25,
-            //     fontWeight: FontWeight.w700,
-            //   ),
-            // ),
             const SizedBox(
               height: 25,
             ),
             Container(
               width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: Colors.grey),
+                  borderRadius: const BorderRadius.all(Radius.circular(5))),
               margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextInputField(
+              child: TextField(
                 controller: _emailController,
-                labelText: 'Email',
-                icon: Icons.email,
+                style: const TextStyle(color: textColor),
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(width: 1),
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  prefixIcon: Icon(
+                    Icons.lock,
+                    color: Colors.redAccent,
+                  ),
+                  label: Text("Email", style: TextStyle(color: Colors.black)),
+                  hintStyle: TextStyle(
+                      fontWeight: FontWeight.w300, color: Colors.grey),
+                ),
               ),
             ),
             const SizedBox(
@@ -49,12 +67,26 @@ class LoginScreen extends StatelessWidget {
             ),
             Container(
               width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: Colors.grey),
+                  borderRadius: const BorderRadius.all(Radius.circular(5))),
               margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextInputField(
+              child: TextField(
                 controller: _passwordController,
-                labelText: 'Mật khẩu',
-                icon: Icons.lock,
-                isObscure: true,
+                style: const TextStyle(color: textColor),
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(width: 1),
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  prefixIcon: Icon(
+                    Icons.lock,
+                    color: Colors.redAccent,
+                  ),
+                  label:
+                      Text("Mật khẩu", style: TextStyle(color: Colors.black)),
+                  hintStyle: TextStyle(
+                      fontWeight: FontWeight.w300, color: Colors.grey),
+                ),
               ),
             ),
             const SizedBox(
@@ -93,9 +125,7 @@ class LoginScreen extends StatelessWidget {
               children: [
                 const Text(
                   'Bạn chưa có tài khoản? ',
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
+                  style: TextStyle(fontSize: 20, color: Colors.blueAccent),
                 ),
                 InkWell(
                   onTap: () => Navigator.of(context).push(
