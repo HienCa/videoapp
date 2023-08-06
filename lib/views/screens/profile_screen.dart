@@ -6,6 +6,8 @@ import 'package:videoapp/constants.dart';
 import 'package:videoapp/controllers/profile_controller.dart';
 import 'package:videoapp/views/screens/update_profile_screen.dart';
 
+import 'friend_screen.dart';
+
 class ProfileScreen extends StatefulWidget {
   final String uid;
   const ProfileScreen({
@@ -17,6 +19,8 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
+enum MenuOptions { option1, option2, option3 }
+
 class _ProfileScreenState extends State<ProfileScreen> {
   final ProfileController profileController = Get.put(ProfileController());
 
@@ -24,6 +28,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     profileController.updateUserId(widget.uid);
+  }
+
+  void showPopupMenu(BuildContext context) {
+    // Show the PopupMenuButton as you did before
+    showMenu<MenuOptions>(
+      context: context,
+      position: const RelativeRect.fromLTRB(
+          1000, 80, 10, 0), // Change the position as needed
+      items: <PopupMenuEntry<MenuOptions>>[
+        const PopupMenuItem<MenuOptions>(
+          value: MenuOptions.option1,
+          child: Text('Bạn bè'),
+        ),
+        const PopupMenuItem<MenuOptions>(
+          value: MenuOptions.option2,
+          child: Text('Cài đặt'),
+        ),
+        const PopupMenuItem<MenuOptions>(
+          value: MenuOptions.option3,
+          child: Text('Đăng xuất'),
+        ),
+      ],
+      elevation: 8.0,
+    ).then((selectedOption) {
+      // Handle the selected option here
+      if (selectedOption != null) {
+        switch (selectedOption) {
+          case MenuOptions.option1:
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FriendScreen()),
+            );
+            break;
+          case MenuOptions.option2:
+            // Do something for option 2.
+            break;
+          case MenuOptions.option3:
+            authController.signOut();
+            break;
+        }
+      }
+    });
   }
 
   @override
@@ -36,7 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: CircularProgressIndicator(),
             );
           } else {
-            print(controller.user);
+            // print(controller.user);
           }
           return Scaffold(
             appBar: AppBar(
@@ -45,13 +91,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Icons.person_add_alt_1_outlined,
                 color: Colors.black54,
               ),
-              actions: const [
-                Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Icon(
-                    Icons.menu,
-                    color: Colors.black54,
-                  ),
+              actions: <Widget>[
+                IconButton(
+                  icon: const Icon(Icons.menu,
+                      color: Colors.black), // Add the menu icon here
+                  onPressed: () {
+                    // Show the PopupMenuButton when the menu icon is pressed
+                    showPopupMenu(context);
+                  },
                 ),
               ],
             ),
@@ -194,8 +241,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       onTap: () {
                                         if (widget.uid ==
                                             authController.user.uid) {
-                                          //sửa hồ sơ
-                                          // authController.signOut();
+                                          //chỉnh sửa hồ sơ
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -205,7 +251,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                               .user.uid)));
                                         } else {
                                           // chức năng kết bạn
-                                          // controller.followUser();
+                                          // controller.addFriend(widget.uid);
                                         }
                                       },
                                       child: widget.uid ==
@@ -217,13 +263,77 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   fontWeight: FontWeight.bold,
                                                   color: textColor),
                                             )
-                                          : const Text(
-                                              'Kết bạn',
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: textColor),
-                                            ),
+                                          : FutureBuilder<bool>(
+                                              future: profileController
+                                                  .isFriendRequestSent(widget
+                                                      .uid), // Replace 'TARGET_USER_ID' with the actual user ID you want to check
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.waiting) {
+                                                  // Show a loading indicator while waiting for the result
+                                                  return const CircularProgressIndicator();
+                                                } else if (snapshot.hasError) {
+                                                  // Show an error message if there is an error
+                                                  return Text(
+                                                      'Error: Lỗi kết nối - ${snapshot.error}');
+                                                } else {
+                                                  // Use a ternary operator to display different texts based on the result
+                                                  bool isRequestSent = snapshot
+                                                          .data ??
+                                                      false; // Use 'false' as default value if data is null
+                                                  return isRequestSent
+                                                      ? ElevatedButton(
+                                                          onPressed: () {
+                                                            controller
+                                                                .cancelFriendRequestSent(
+                                                                    widget.uid);
+                                                          },
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .redAccent,
+                                                            elevation: 2.0,
+                                                          ),
+                                                          child: const Text(
+                                                            'Thu hồi',
+                                                            style: TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : ElevatedButton(
+                                                          onPressed: () {
+                                                            controller
+                                                                .addFriend(
+                                                                    widget.uid);
+                                                          },
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .redAccent,
+                                                            elevation: 2.0,
+                                                          ),
+                                                          child: const Text(
+                                                            'kết bạn',
+                                                            style: TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                          ),
+                                                        );
+                                                }
+                                              }),
                                     ),
                                   ),
                                 ),

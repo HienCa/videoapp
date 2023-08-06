@@ -80,10 +80,13 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 10),
                     width: MediaQuery.of(context).size.width - 20,
+                 
                     child: TextInputField(
+                      
                       controller: _captionController,
                       labelText: 'Tiêu đề',
                       icon: Icons.closed_caption,
+                      
                     ),
                   ),
                   const SizedBox(

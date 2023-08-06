@@ -18,9 +18,14 @@ class TextInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      style: const TextStyle(color: textColor),
       decoration: InputDecoration(
-        labelText: labelText,
-        prefixIcon: Icon(icon),
+        label: Text(labelText, style: const TextStyle(color: Colors.redAccent)),
+        // labelText: labelText,
+        prefixIcon: const Icon(
+                    Icons.lock,
+                    color: Colors.redAccent,
+                  ),
         labelStyle: const TextStyle(
           fontSize: 20,
         ),

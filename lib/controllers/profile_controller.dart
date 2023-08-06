@@ -31,6 +31,8 @@ class ProfileController extends GetxController {
 
   updateUserId(String uid) {
     _uid.value = uid;
+    print(uid);
+    print("111111111111111111111111111111111111111111");
     getUserData();
   }
 
@@ -121,6 +123,21 @@ class ProfileController extends GetxController {
     update();
   }
 
+  // Future<bool> isFollowed(String uid) async {
+  //   //uid là uid cần check
+  //   var doc = await firestore
+  //       .collection('users')
+  //       .doc(uid)
+  //       .collection('followers')
+  //       .doc(authController.user.uid)
+  //       .get();
+
+  //   if (!doc.exists) {
+  //     return false;
+  //   }
+  //   return true;
+  // }
+
   followUser() async {
     var doc = await firestore
         .collection('users')
@@ -165,6 +182,103 @@ class ProfileController extends GetxController {
       );
     }
     _user.value.update('isFollowing', (value) => !value);
+    update();
+  }
+
+  // lấy danh sách lời mười kết bạn
+  Future<List<Map<String, dynamic>>> getReceivedFriendRequests() async {
+    String currentUserId = authController.user.uid;
+
+    // Lấy danh sách receivedFriendRequests từ tài liệu của người dùng hiện tại
+    var userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .get();
+
+    List<String> receivedFriendRequests = [];
+    if (userDoc.exists) {
+      receivedFriendRequests =
+          (userDoc.data()?['receivedFriendRequests'] as List<dynamic>)
+              .cast<String>();
+    }
+
+    // Truy vấn thông tin user dựa vào các ID có trong receivedFriendRequests
+    List<Map<String, dynamic>> usersInfo = [];
+    for (String userId in receivedFriendRequests) {
+      var userQuery = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      if (userQuery.exists) {
+        usersInfo.add(userQuery.data() as Map<String, dynamic>);
+      }
+    }
+
+    return usersInfo;
+  }
+
+  Future<bool> isFriendRequestSent(String id) async {
+    var userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(id).get();
+
+    if (userDoc.exists) {
+      var sentFriendRequests = userDoc.data()?['receivedFriendRequests'] ?? [];
+
+      return sentFriendRequests.contains(authController.user.uid);
+    }
+
+    return false;
+  }
+
+  // thu hồi gửi lời mời kết bạn
+  Future<void> cancelFriendRequestSent(String id) async {
+    var currentUserRef = firestore.collection('users').doc(id);
+    var currentUserDoc = await currentUserRef.get();
+
+    if (currentUserDoc.exists) {
+      if ((currentUserDoc.data()! as dynamic)['receivedFriendRequests']
+          .contains(authController.user.uid)) {
+        await firestore.collection('users').doc(id).update({
+          'receivedFriendRequests':
+              FieldValue.arrayRemove([authController.user.uid]),
+        });
+      }
+    }
+    update();
+  }
+
+  Future<void> addFriend(String id) async {
+    var userSendDocRef =
+        firestore.collection('users').doc(authController.user.uid);
+    var userSendDoc = await userSendDocRef.get();
+
+    var userTargetDocRef = firestore.collection('users').doc(id);
+    var userTargetDoc = await userTargetDocRef.get();
+
+    if (userSendDoc.exists && userTargetDoc.exists) {
+      // Check if they are not already friends
+      var checkFriend = await firestore
+          .collection('users')
+          .doc(id)
+          .collection('friends')
+          .doc(authController.user.uid)
+          .get();
+
+      if (!checkFriend.exists) {
+        var sentFriendRequests =
+            userTargetDoc.data()?['receivedFriendRequests'] ?? [];
+
+        sentFriendRequests = [
+          ...sentFriendRequests,
+          authController.user.uid
+        ]; // uid là uid người gửi
+
+        await userTargetDocRef.set({
+          'receivedFriendRequests': sentFriendRequests,
+        }, SetOptions(merge: true));
+      }
+    }
+
     update();
   }
 
@@ -223,7 +337,9 @@ class ProfileController extends GetxController {
         String newName = name;
 
         // Update the 'name' field for the video
-        await videosCollection.doc(videoId).update({'username': newName, 'name':videoId});
+        await videosCollection
+            .doc(videoId)
+            .update({'username': newName, 'name': videoId});
 
         print('Updated name for video with ID: $videoId');
       }
