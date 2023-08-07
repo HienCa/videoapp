@@ -19,7 +19,7 @@ class VideoPlayerItem extends StatefulWidget {
 
 class _VideoPlayerItemState extends State<VideoPlayerItem> {
   late VideoPlayerController videoPlayerController;
-
+  bool showPlayPauseIcon = true; // Trạng thái hiển thị biểu tượng play/pause
   bool isPlaying = false;
   @override
   void initState() {
@@ -28,10 +28,9 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
         VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl.toString()))
           ..initialize().then((_) {
             setState(() {
-              // videoPlayerController.play();
-              // videoPlayerController.setLooping(true);
-              // videoPlayerController.setVolume(1);
-            
+              videoPlayerController.play();
+              videoPlayerController.setLooping(true);
+              videoPlayerController.setVolume(1);
             });
           });
   }
@@ -45,8 +44,25 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
   void _togglePlayPause() {
     if (videoPlayerController.value.isPlaying) {
       videoPlayerController.pause();
+      setState(() {
+        isPlaying = false;
+      });
     } else {
       videoPlayerController.play();
+      setState(() {
+        isPlaying = true;
+      });
+    }
+    // Hiển thị biểu tượng sau 1 giây nếu video không đang phát
+    if (!videoPlayerController.value.isPlaying) {
+      setState(() {
+        showPlayPauseIcon = true;
+      });
+      Future.delayed(const Duration(seconds: 1), () {
+        setState(() {
+          showPlayPauseIcon = false;
+        });
+      });
     }
   }
 
@@ -56,13 +72,29 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
       onTap: _togglePlayPause,
       child: Container(
         width: double.infinity,
-        height: double.infinity,
+        height: double.infinity * 0.8,
         decoration: const BoxDecoration(
           color: Colors.black,
         ),
-        child: AspectRatio(
-          aspectRatio: videoPlayerController.value.aspectRatio,
-          child: VideoPlayer(videoPlayerController),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AspectRatio(
+              aspectRatio: videoPlayerController.value.aspectRatio,
+              child: VideoPlayer(videoPlayerController),
+            ),
+            Icon(
+              videoPlayerController.value.isPlaying
+                  ? Icons.pause
+                  : Icons.play_arrow,
+              size: 48,
+              color: Colors.white,
+            ),
+            VideoProgressIndicator(
+              videoPlayerController,
+              allowScrubbing: true, // Cho phép tua video
+            ),
+          ],
         ),
       ),
     );

@@ -39,17 +39,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
       items: <PopupMenuEntry<MenuOptions>>[
         const PopupMenuItem<MenuOptions>(
           value: MenuOptions.option1,
-          child: Text('Bạn bè'),
+          child: ListTile(
+            leading: Icon(Icons.people),
+            title: Text('Bạn bè'),
+          ),
         ),
         const PopupMenuItem<MenuOptions>(
           value: MenuOptions.option2,
-          child: Text('Cài đặt'),
+          child: ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Cài đặt'),
+          ),
         ),
         const PopupMenuItem<MenuOptions>(
           value: MenuOptions.option3,
-          child: Text('Đăng xuất'),
+          child: ListTile(
+            leading: Icon(Icons.logout),
+            title: Text('Đăng xuất'),
+          ),
         ),
       ],
+
       elevation: 8.0,
     ).then((selectedOption) {
       // Handle the selected option here
@@ -62,7 +72,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             );
             break;
           case MenuOptions.option2:
-            // Do something for option 2.
             break;
           case MenuOptions.option3:
             authController.signOut();
@@ -254,86 +263,137 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           // controller.addFriend(widget.uid);
                                         }
                                       },
-                                      child: widget.uid ==
-                                              authController.user.uid
-                                          ? const Text(
-                                              'Sửa hồ sơ',
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: textColor),
-                                            )
-                                          : FutureBuilder<bool>(
-                                              future: profileController
-                                                  .isFriendRequestSent(widget
-                                                      .uid), // Replace 'TARGET_USER_ID' with the actual user ID you want to check
-                                              builder: (context, snapshot) {
-                                                if (snapshot.connectionState ==
-                                                    ConnectionState.waiting) {
-                                                  // Show a loading indicator while waiting for the result
-                                                  return const CircularProgressIndicator();
-                                                } else if (snapshot.hasError) {
-                                                  // Show an error message if there is an error
-                                                  return Text(
-                                                      'Error: Lỗi kết nối - ${snapshot.error}');
-                                                } else {
-                                                  // Use a ternary operator to display different texts based on the result
-                                                  bool isRequestSent = snapshot
-                                                          .data ??
-                                                      false; // Use 'false' as default value if data is null
-                                                  return isRequestSent
-                                                      ? ElevatedButton(
-                                                          onPressed: () {
-                                                            controller
-                                                                .cancelFriendRequestSent(
-                                                                    widget.uid);
-                                                          },
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                            backgroundColor:
-                                                                Colors
-                                                                    .redAccent,
-                                                            elevation: 2.0,
-                                                          ),
-                                                          child: const Text(
-                                                            'Thu hồi',
-                                                            style: TextStyle(
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        )
-                                                      : ElevatedButton(
-                                                          onPressed: () {
-                                                            controller
-                                                                .addFriend(
-                                                                    widget.uid);
-                                                          },
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                            backgroundColor:
-                                                                Colors
-                                                                    .redAccent,
-                                                            elevation: 2.0,
-                                                          ),
-                                                          child: const Text(
-                                                            'kết bạn',
-                                                            style: TextStyle(
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        );
-                                                }
-                                              }),
+                                      child:
+                                          widget.uid == authController.user.uid
+                                              ? const Text(
+                                                  'Sửa hồ sơ',
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: textColor),
+                                                )
+                                              : (FutureBuilder<bool>(
+                                                  future: profileController
+                                                      .isFriended(widget.uid),
+                                                  builder: (context, snapshot) {
+                                                    if (snapshot
+                                                            .connectionState ==
+                                                        ConnectionState
+                                                            .waiting) {
+                                                      return const CircularProgressIndicator();
+                                                    } else if (snapshot
+                                                        .hasError) {
+                                                      return Text(
+                                                          'Error: Lỗi kết nối - ${snapshot.error}');
+                                                    } else {
+                                                      bool isfriended =
+                                                          snapshot.data ??
+                                                              false;
+                                                      return isfriended
+                                                          ? ElevatedButton(
+                                                              onPressed: () {
+                                                                controller
+                                                                    .cancelFriend(
+                                                                        widget
+                                                                            .uid);
+                                                              },
+                                                              style:
+                                                                  ElevatedButton
+                                                                      .styleFrom(
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .redAccent,
+                                                                elevation: 2.0,
+                                                              ),
+                                                              child: const Text(
+                                                                'Hủy kết bạn',
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: Colors
+                                                                      .white,
+                                                                ),
+                                                              ),
+                                                            )
+                                                          : FutureBuilder<bool>(
+                                                              future: profileController
+                                                                  .isFriendRequestSent(
+                                                                      widget
+                                                                          .uid),
+                                                              builder: (context,
+                                                                  snapshot) {
+                                                                if (snapshot
+                                                                        .connectionState ==
+                                                                    ConnectionState
+                                                                        .waiting) {
+                                                                  // Show a loading indicator while waiting for the result
+                                                                  return const CircularProgressIndicator();
+                                                                } else if (snapshot
+                                                                    .hasError) {
+                                                                  // Show an error message if there is an error
+                                                                  return Text(
+                                                                      'Error: Lỗi kết nối - ${snapshot.error}');
+                                                                } else {
+                                                                  // Use a ternary operator to display different texts based on the result
+                                                                  bool
+                                                                      isRequestSent =
+                                                                      snapshot.data ??
+                                                                          false; // Use 'false' as default value if data is null
+                                                                  return isRequestSent
+                                                                      ? ElevatedButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            controller.cancelFriendRequestSent(widget.uid);
+                                                                          },
+                                                                          style:
+                                                                              ElevatedButton.styleFrom(
+                                                                            backgroundColor:
+                                                                                Colors.redAccent,
+                                                                            elevation:
+                                                                                2.0,
+                                                                          ),
+                                                                          child:
+                                                                              const Text(
+                                                                            'Thu hồi',
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 15,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: Colors.white,
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      : ElevatedButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            controller.addFriend(widget.uid);
+                                                                          },
+                                                                          style:
+                                                                              ElevatedButton.styleFrom(
+                                                                            backgroundColor:
+                                                                                Colors.redAccent,
+                                                                            elevation:
+                                                                                2.0,
+                                                                          ),
+                                                                          child:
+                                                                              const Text(
+                                                                            'Kết bạn',
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 15,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: Colors.white,
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                }
+                                                              });
+                                                    }
+                                                  })),
                                     ),
                                   ),
                                 ),

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -185,7 +187,7 @@ class ProfileController extends GetxController {
     update();
   }
 
-  // lấy danh sách lời mười kết bạn
+  // lấy danh sách lời mời kết bạn
   Future<List<Map<String, dynamic>>> getReceivedFriendRequests() async {
     String currentUserId = authController.user.uid;
 
@@ -230,6 +232,21 @@ class ProfileController extends GetxController {
     return false;
   }
 
+  Future<bool> isFriended(String id) async {
+    var userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(authController.user.uid)
+        .get();
+
+    if (userDoc.exists) {
+      var friends = userDoc.data()?['friends'] ?? [];
+
+      return friends.contains(id);
+    }
+
+    return false;
+  }
+
   // thu hồi gửi lời mời kết bạn
   Future<void> cancelFriendRequestSent(String id) async {
     var currentUserRef = firestore.collection('users').doc(id);
@@ -257,14 +274,8 @@ class ProfileController extends GetxController {
 
     if (userSendDoc.exists && userTargetDoc.exists) {
       // Check if they are not already friends
-      var checkFriend = await firestore
-          .collection('users')
-          .doc(id)
-          .collection('friends')
-          .doc(authController.user.uid)
-          .get();
-
-      if (!checkFriend.exists) {
+      var isfriended = await isFriended(id);
+      if (!isfriended) {
         var sentFriendRequests =
             userTargetDoc.data()?['receivedFriendRequests'] ?? [];
 
@@ -280,6 +291,40 @@ class ProfileController extends GetxController {
     }
 
     update();
+  }
+
+//hủy kết bạn
+  Future<void> cancelFriend(String id) async {
+    try {
+      var currentUserRef =
+          firestore.collection('users').doc(authController.user.uid);
+      var currentUserDoc = await currentUserRef.get();
+
+      var targetUserRef = firestore.collection('users').doc(id);
+      var targetUserDoc = await targetUserRef.get();
+
+      if (currentUserDoc.exists && targetUserDoc.exists) {
+        if ((currentUserDoc.data()! as dynamic)['friends'].contains(id)) {
+          await firestore
+              .collection('users')
+              .doc(authController.user.uid)
+              .update({
+            'friends': FieldValue.arrayRemove([id]),
+          });
+        }
+        if ((targetUserDoc.data()! as dynamic)['friends']
+            .contains(authController.user.uid)) {
+          await firestore.collection('users').doc(id).update({
+            'friends': FieldValue.arrayRemove([authController.user.uid]),
+          });
+        }
+      }
+      
+    } catch (e) {
+      print('Error accepting friend request: $e');
+    }
+    update();
+
   }
 
   Future<String> _uploadToStorage(File image) async {
