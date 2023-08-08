@@ -84,6 +84,7 @@ class AddVideoScreen extends StatelessWidget {
       body: Center(
         child: InkWell(
           onTap: () => showOptionsDialog(context),
+
           child: Container(
             width: 190,
             height: 50,

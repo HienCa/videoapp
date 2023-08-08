@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:videoapp/controllers/auth_controller.dart';
-import 'package:videoapp/views/screens/add_video_screen.dart';
+// import 'package:videoapp/views/screens/add_video_screen.dart';
 import 'package:videoapp/views/screens/notification_screen.dart';
 import 'package:videoapp/views/screens/profile_screen.dart';
 import 'package:videoapp/views/screens/search_screen.dart';
@@ -12,7 +12,8 @@ import 'package:videoapp/views/screens/video_screen.dart';
 List pages = [
   VideoScreen(),
   SearchScreen(),
-  const AddVideoScreen(),
+  // const AddVideoScreen(),
+  const Text(''),
   const NotificationScreen(),
   ProfileScreen(uid: authController.user.uid),
 ];

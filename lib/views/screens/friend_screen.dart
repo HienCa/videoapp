@@ -1,5 +1,5 @@
-// ignore_for_file: avoid_print
-
+// import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -21,6 +21,38 @@ class _FriendScreenState extends State<FriendScreen> {
     // Truy xuất dữ liệu từ Firestore trong hàm initState và lưu vào trường receivedFriendRequests
     fetchReceivedFriendRequests();
     fetchFriends();
+  }
+
+  _dismissDialog() {
+    Navigator.pop(context);
+  }
+
+  void showCupertinoDialog(String name, String uid) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text('Bạn muốn hủy kết bạn với @$name ?'),
+            content: const Text('Đừng hủy kết bạn với mình mà! huhu!'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  _dismissDialog();
+                },
+                child: const Text('Hủy',
+                    style: TextStyle(color: Colors.redAccent)),
+              ),
+              TextButton(
+                onPressed: () {
+                  cancelFriend(uid);
+                  _dismissDialog();
+                },
+                child: const Text('Xác nhận',
+                    style: TextStyle(color: Colors.white)),
+              )
+            ],
+          );
+        });
   }
 
   Future<void> acceptFriendRequest(String id) async {
@@ -259,6 +291,18 @@ class _FriendScreenState extends State<FriendScreen> {
                   TextButton(
                     onPressed: () {
                       cancelFriendRequestSent(usersInfo[index].uid);
+                      //      AwesomeDialog(
+                      //   context: context,
+                      //   dialogType: DialogType.info,
+                      //   animType: AnimType.rightSlide,
+                      //   title:
+                      //       'Sao bạn không đồng ý kết bạn với mình vậy?',
+                      //   desc: 'Mình hâm mộ bạn lắm đó! huhu!',
+                      //   btnCancelOnPress: () {},
+                      //   btnOkOnPress: () {
+                      //     cancelFriendRequestSent(usersInfo[index].uid);
+                      //   },
+                      // )..show();
                     },
                     child: const Icon(
                       Icons.delete_rounded,
@@ -313,7 +357,9 @@ class _FriendScreenState extends State<FriendScreen> {
               ),
               child: TextButton(
                 onPressed: () {
-                  cancelFriend(friendsList[index].uid);
+                  // cancelFriend(friendsList[index].uid);
+                  showCupertinoDialog(friendsList[index].name, friendsList[index].uid);
+                  
                 },
                 child: const Text(
                   'Hủy kết bạn',

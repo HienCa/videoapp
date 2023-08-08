@@ -1,15 +1,44 @@
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:videoapp/constants.dart';
 import 'package:videoapp/views/screens/auth/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
   SignupScreen({Key? key}) : super(key: key);
 
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _emailController = TextEditingController();
+
   final TextEditingController _passwordController = TextEditingController();
+
   final TextEditingController _usernameController = TextEditingController();
+
+  String? selectedImagePath;
+  final Rx<File?> _pickedImage = Rx<File?>(null);
+  @override
+  void initState() {
+    super.initState();
+    // Truy xuất dữ liệu từ Firestore trong hàm initState và lưu vào trường receivedFriendRequests
+  }
+
+  Future<void> pickImage() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() {
+        _pickedImage.value = File(pickedImage.path);
+        selectedImagePath = pickedImage.path;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +50,7 @@ class SignupScreen extends StatelessWidget {
           children: [
             Text(
               'Video CVG',
-              style:  GoogleFonts.bungee(
+              style: GoogleFonts.bungee(
                 fontSize: 40,
                 color: buttonColor,
                 fontWeight: FontWeight.w900,
@@ -32,25 +61,36 @@ class SignupScreen extends StatelessWidget {
             ),
             Stack(
               children: [
-                InkWell(
-                  onTap: () {
-                    authController.pickImage();
-                    
-                  },
-                  child: ClipOval(
-                    child: Image.asset(
-                      "assets/images/user-default.png",
+                if (selectedImagePath != null)
+                  ClipOval(
+                    child: Image.file(
+                      File(selectedImagePath!),
                       width: 150,
                       height: 150,
                       fit: BoxFit.cover,
                     ),
+                  )
+                else
+                  InkWell(
+                    onTap: () async {
+                      await pickImage();
+                    },
+                    child: ClipOval(
+                      child: Image.asset(
+                        "assets/images/user-default.png",
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                ),
                 Positioned(
                   bottom: -10,
                   left: 80,
                   child: IconButton(
-                    onPressed: () => authController.pickImage(),
+                    onPressed: () async {
+                      await pickImage();
+                    },
                     icon: const Icon(
                       Icons.add_a_photo,
                       color: Colors.redAccent,
@@ -89,7 +129,6 @@ class SignupScreen extends StatelessWidget {
             const SizedBox(
               height: 15,
             ),
-
             Container(
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
@@ -124,6 +163,7 @@ class SignupScreen extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
                 controller: _passwordController,
+                obscureText: true,
                 style: const TextStyle(color: textColor),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
@@ -176,9 +216,16 @@ class SignupScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Bạn đã có tài khoản rồi? ',
-                  style: TextStyle(fontSize: 20, color: Colors.blueAccent),
+                InkWell(
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => LoginScreen(),
+                    ),
+                  ),
+                  child: const Text(
+                    'Bạn đã có tài khoản rồi? ',
+                    style: TextStyle(fontSize: 20, color: Colors.blueAccent),
+                  ),
                 ),
                 InkWell(
                   onTap: () => Navigator.of(context).push(

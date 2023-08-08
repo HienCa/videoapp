@@ -28,9 +28,9 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
         VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl.toString()))
           ..initialize().then((_) {
             setState(() {
-              videoPlayerController.play();
-              videoPlayerController.setLooping(true);
-              videoPlayerController.setVolume(1);
+              // videoPlayerController.play();
+              // videoPlayerController.setLooping(true);
+              // videoPlayerController.setVolume(1);
             });
           });
   }
@@ -83,13 +83,18 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
               aspectRatio: videoPlayerController.value.aspectRatio,
               child: VideoPlayer(videoPlayerController),
             ),
-            Icon(
-              videoPlayerController.value.isPlaying
-                  ? Icons.pause
-                  : Icons.play_arrow,
-              size: 48,
-              color: Colors.white,
-            ),
+            
+            videoPlayerController.value.isPlaying
+                ? const Icon(
+                    Icons.pause,
+                    size: 48,
+                    color: Colors.transparent,
+                  )
+                : const Icon(
+                    Icons.play_arrow,
+                    size: 48,
+                    color: Colors.white,
+                  ),
             VideoProgressIndicator(
               videoPlayerController,
               allowScrubbing: true, // Cho phép tua video

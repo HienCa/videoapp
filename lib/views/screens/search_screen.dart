@@ -24,6 +24,55 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   List<User> friendsList = [];
+  _dismissDialog() {
+    Navigator.pop(context);
+  }
+
+  void _showSimpleDialog(String uid) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            backgroundColor: Colors.white,
+            // title: const Text(''),
+            children: <Widget>[
+              SimpleDialogOption(
+                
+                onPressed: () {
+                  _dismissDialog();
+                },
+                child: InkWell(
+                    onTap: () => {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ProfileScreen(uid: uid),
+                            ),
+                          ),
+                        },
+                    child: const Center(
+                        child: Text(
+                      'Xem trang cá nhân',
+                      style: TextStyle(fontSize: 20, color: textColor),
+                    ))),
+              ),
+                            const Divider(color: textColor,),
+              SimpleDialogOption(
+                onPressed: () {
+                  _dismissDialog();
+                },
+                child: InkWell(
+                    onTap: () => {},
+                    child: const Center(
+                        child: Text(
+                      'Chặn',
+style: TextStyle(fontSize: 20, color: textColor),
+                    ))),
+              ),
+            ],
+          );
+        });
+  }
+
   // Danh sách các đối tượng User
   @override
   Widget build(BuildContext context) {
@@ -70,6 +119,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         builder: (context) => ProfileScreen(uid: user.uid),
                       ),
                     ),
+                    onLongPress: () => _showSimpleDialog(user.uid),
                     child: ListTile(
                       leading: CircleAvatar(
                         backgroundImage: NetworkImage(

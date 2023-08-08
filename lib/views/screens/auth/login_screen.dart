@@ -73,6 +73,7 @@ class LoginScreen extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
                 controller: _passwordController,
+                obscureText: true,
                 style: const TextStyle(color: textColor),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
@@ -84,9 +85,11 @@ class LoginScreen extends StatelessWidget {
                   ),
                   label:
                       Text("Mật khẩu", style: TextStyle(color: Colors.black)),
+                  
                   hintStyle: TextStyle(
                       fontWeight: FontWeight.w300, color: Colors.grey),
                 ),
+                
               ),
             ),
             const SizedBox(
@@ -123,9 +126,17 @@ class LoginScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Bạn chưa có tài khoản? ',
-                  style: TextStyle(fontSize: 20, color: Colors.blueAccent),
+                
+                InkWell(
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SignupScreen(),
+                    ),
+                  ),
+                  child: const Text(
+                    'Bạn chưa có tài khoản? ',
+                    style: TextStyle(fontSize: 20, color: Colors.blueAccent),
+                  ),
                 ),
                 InkWell(
                   onTap: () => Navigator.of(context).push(

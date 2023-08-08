@@ -1,4 +1,8 @@
+// ignore_for_file: avoid_single_cascade_in_expression_statements
+
+// import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
@@ -28,6 +32,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     profileController.updateUserId(widget.uid);
+  }
+
+  _dismissDialog() {
+    Navigator.pop(context);
   }
 
   void showPopupMenu(BuildContext context) {
@@ -86,6 +94,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return GetBuilder<ProfileController>(
         init: ProfileController(),
         builder: (controller) {
+          void showCupertinoDialog() {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  String name = controller.user['name'];
+                  return CupertinoAlertDialog(
+                    title: Text('Bạn muốn hủy kết bạn với @$name ?'),
+                    content: const Text('Đừng hủy kết bạn với mình mà! huhu!'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          _dismissDialog();
+                        },
+                        child: const Text('Hủy',
+                            style: TextStyle(color: Colors.redAccent)),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          controller.cancelFriend(widget.uid);
+                          _dismissDialog();
+                        },
+                        child: const Text('Xác nhận',
+                            style: TextStyle(color: Colors.white)),
+                      )
+                    ],
+                  );
+                });
+          }
+
           if (controller.user.isEmpty) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -293,10 +330,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                       return isfriended
                                                           ? ElevatedButton(
                                                               onPressed: () {
-                                                                controller
-                                                                    .cancelFriend(
-                                                                        widget
-                                                                            .uid);
+                                                                showCupertinoDialog();
                                                               },
                                                               style:
                                                                   ElevatedButton

@@ -14,6 +14,8 @@ class CommentController extends GetxController {
     getComment();
   }
 
+  
+
   getComment() async {
     _comments.bindStream(
       firestore
@@ -55,6 +57,7 @@ class CommentController extends GetxController {
           profilePhoto: (userDoc.data()! as dynamic)['profilePhoto'],
           uid: authController.user.uid,
           id: 'Comment $len',
+          videoId: _postId,
         );
         await firestore
             .collection('videos')
