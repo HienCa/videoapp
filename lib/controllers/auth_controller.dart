@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Correct import for Firestore
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:videoapp/constants.dart';
@@ -13,7 +14,7 @@ class AuthController extends GetxController {
   static AuthController instance = Get.find();
   late Rx<User?> _user;
   late Rx<File?> _pickedImage;
-  
+
   File? get profilePhoto => _pickedImage.value;
   User get user => _user.value!;
 
@@ -106,6 +107,12 @@ class AuthController extends GetxController {
       if (email.isNotEmpty && password.isNotEmpty) {
         await firebaseAuth.signInWithEmailAndPassword(
             email: email, password: password);
+        Get.snackbar(
+          'WELCOME TO VIDEO CVG!',
+          'Chúc bạn có một ngày vui vẻ!!!',
+          backgroundColor: Colors.lightBlue, // Màu nền
+          colorText: Colors.white, // M
+        );
       } else {
         Get.snackbar(
           'Đăng nhập thất bại!',
@@ -126,6 +133,12 @@ class AuthController extends GetxController {
   }
 
   void signOut() async {
+    Get.snackbar(
+      'SEE YOU!',
+      'Chúc bạn có một ngày vui vẻ!!!',
+      backgroundColor: Colors.lightBlue, // Màu nền
+      colorText: Colors.white, // M
+    );
     await firebaseAuth.signOut();
   }
 }

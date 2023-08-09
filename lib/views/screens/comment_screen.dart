@@ -36,9 +36,15 @@ class _CommentScreenState extends State<CommentScreen> {
 
       // Delete the comment
       await commentRef.delete();
-      print('Comment deleted successfully.');
+      Get.snackbar(
+      'BÌNH LUẬN!',
+      'Bạn đã xóa bình luận thành công.',
+      backgroundColor: Colors.redAccent, // Màu nền
+      colorText: Colors.white, // M
+    );
+      // print('Comment deleted successfully.');
     } catch (error) {
-      print('Error deleting comment: $error');
+      // print('Error deleting comment: $error');
     }
   }
 
@@ -297,7 +303,9 @@ class _CommentScreenState extends State<CommentScreen> {
                   ),
                   trailing: TextButton(
                     onPressed: () =>
-                        commentController.postComment(_commentController.text),
+                        {commentController.postComment(_commentController.text),
+                        _commentController.clear()
+                        },
                     child: const Text(
                       'Gửi',
                       style: TextStyle(

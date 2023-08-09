@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
             // icon: CustomIcon(),
             icon: IconButton(
               onPressed: () => pickVideo(
-                  ImageSource.gallery, context), // Wrap the function call here
+                  ImageSource.gallery, context), 
               icon: const CustomIcon(),
             ),
             label: '',

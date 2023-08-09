@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:videoapp/controllers/search_controller.dart';
 import 'package:get/get.dart';
@@ -6,7 +7,7 @@ import 'package:videoapp/views/screens/profile_screen.dart';
 import 'package:videoapp/constants.dart';
 
 class SearchScreen extends StatefulWidget {
-  SearchScreen({Key? key}) : super(key: key);
+  const SearchScreen({Key? key}) : super(key: key);
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -24,6 +25,121 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   List<User> friendsList = [];
+  Future<bool> isFriended(String id) async {
+    var userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(authController.user.uid)
+        .get();
+
+    if (userDoc.exists) {
+      var friends = userDoc.data()?['friends'] ?? [];
+
+      return friends.contains(id);
+    }
+
+    return false;
+  }
+
+  Future<void> addFriend(String id) async {
+    var userSendDocRef =
+        firestore.collection('users').doc(authController.user.uid);
+    var userSendDoc = await userSendDocRef.get();
+
+    var userTargetDocRef = firestore.collection('users').doc(id);
+    var userTargetDoc = await userTargetDocRef.get();
+
+    if (userSendDoc.exists && userTargetDoc.exists) {
+      // Check if they are not already friends
+      var isfriended = await isFriended(id);
+      if (!isfriended) {
+        var sentFriendRequests =
+            userTargetDoc.data()?['receivedFriendRequests'] ?? [];
+
+        sentFriendRequests = [
+          ...sentFriendRequests,
+          authController.user.uid
+        ]; // uid là uid người gửi
+
+        await userTargetDocRef.set({
+          'receivedFriendRequests': sentFriendRequests,
+        }, SetOptions(merge: true));
+      }
+    }
+    Get.snackbar(
+      'KẾT BẠN!',
+      'Bạn đã gửi lời mời kết bạn thành công.',
+      backgroundColor: Colors.lightBlue, // Màu nền
+      colorText: Colors.white, // M
+    );
+  }
+
+  Future<bool> isFollowed(String currentUser, String targetUser) async {
+    try {
+      var snapshot = await firestore
+          .collection('users')
+          .doc(targetUser)
+          .collection('followers')
+          .doc(currentUser)
+          .get();
+
+      return snapshot.exists;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  followUser(String uid) async {
+    var doc = await firestore
+        .collection('users')
+        .doc(uid)
+        .collection('followers')
+        .doc(authController.user.uid)
+        .get();
+
+    if (!doc.exists) {
+      await firestore
+          .collection('users')
+          .doc(uid)
+          .collection('followers')
+          .doc(authController.user.uid)
+          .set({});
+      await firestore
+          .collection('users')
+          .doc(authController.user.uid)
+          .collection('following')
+          .doc(uid)
+          .set({});
+
+      Get.snackbar(
+        'THEO DÕI!',
+        'Bạn đã theo dõi người dùng này.',
+        backgroundColor: Colors.lightBlue, // Màu nền
+        colorText: Colors.white, // M
+      );
+    } else {
+      await firestore
+          .collection('users')
+          .doc(uid)
+          .collection('followers')
+          .doc(authController.user.uid)
+          .delete();
+      await firestore
+          .collection('users')
+          .doc(authController.user.uid)
+          .collection('following')
+          .doc(uid)
+          .delete();
+
+      Get.snackbar(
+        'THEO DÕI!',
+        'Bạn đã hủy theo dõi người dùng này.',
+        backgroundColor: Colors.lightBlue, // Màu nền
+        colorText: Colors.white, // M
+      );
+    }
+    setState(() {});
+  }
+
   _dismissDialog() {
     Navigator.pop(context);
   }
@@ -37,7 +153,6 @@ class _SearchScreenState extends State<SearchScreen> {
             // title: const Text(''),
             children: <Widget>[
               SimpleDialogOption(
-                
                 onPressed: () {
                   _dismissDialog();
                 },
@@ -55,7 +170,28 @@ class _SearchScreenState extends State<SearchScreen> {
                       style: TextStyle(fontSize: 20, color: textColor),
                     ))),
               ),
-                            const Divider(color: textColor,),
+              uid != authController.user.uid
+                  ? const Divider(
+                      color: textColor,
+                    )
+                  : Container(),
+              uid != authController.user.uid
+                  ? SimpleDialogOption(
+                      onPressed: () {
+                        _dismissDialog();
+                      },
+                      child: InkWell(
+                          onTap: () => {addFriend(uid)},
+                          child: const Center(
+                              child: Text(
+                            'Kết bạn',
+                            style: TextStyle(fontSize: 20, color: textColor),
+                          ))),
+                    )
+                  : const SimpleDialogOption(),
+              const Divider(
+                color: textColor,
+              ),
               SimpleDialogOption(
                 onPressed: () {
                   _dismissDialog();
@@ -65,7 +201,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: const Center(
                         child: Text(
                       'Chặn',
-style: TextStyle(fontSize: 20, color: textColor),
+                      style: TextStyle(fontSize: 20, color: textColor),
                     ))),
               ),
             ],
@@ -120,20 +256,104 @@ style: TextStyle(fontSize: 20, color: textColor),
                       ),
                     ),
                     onLongPress: () => _showSimpleDialog(user.uid),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                          user.profilePhoto,
-                        ),
-                      ),
-                      title: Text(
-                        user.name,
-                        style: const TextStyle(
-                            fontSize: 18,
-                            color: textColor,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
+                    child: user.uid != authController.user.uid
+                        ? ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                user.profilePhoto,
+                              ),
+                            ),
+                            title: Text(
+                              user.name,
+                              style: const TextStyle(
+                                  fontSize: 18,
+                                  color: textColor,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            trailing: user.uid != authController.user.uid
+                                ? InkWell(
+                                    onTap: () => {followUser(user.uid)},
+                                    child: Container(
+                                      width: 100,
+                                      height: 30,
+                                      decoration: const BoxDecoration(
+                                          color: Colors.redAccent,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      child: FutureBuilder<bool>(
+                                        future: isFollowed(
+                                            user.uid, authController.user.uid),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const Text('');
+                                          } else if (snapshot.hasError) {
+                                            return Text(
+                                                'Error: ${snapshot.error}');
+                                          } else {
+                                            if (snapshot.data == true) {
+                                              return FutureBuilder<bool>(
+                                                future: isFollowed(
+                                                    authController.user.uid,
+                                                    user.uid),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.waiting) {
+                                                    return const Text('');
+                                                  } else if (snapshot
+                                                      .hasError) {
+                                                    return Text(
+                                                        'Error: ${snapshot.error}');
+                                                  } else {
+                                                    if (snapshot.data == true) {
+                                                      return const Center(
+                                                          child: Text(
+                                                              'Hủy follow'));
+                                                    } else {
+                                                      return const Center(
+                                                          child: Text(
+                                                              'Follow lại'));
+                                                    }
+                                                  }
+                                                },
+                                              );
+                                            } else {
+                                              return FutureBuilder<bool>(
+                                                future: isFollowed(
+                                                    authController.user.uid,
+                                                    user.uid),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.waiting) {
+                                                    return const Text('');
+                                                  } else if (snapshot
+                                                      .hasError) {
+                                                    return Text(
+                                                        'Error: ${snapshot.error}');
+                                                  } else {
+                                                    if (snapshot.data == true) {
+                                                      return const Center(
+                                                          child: Text(
+                                                              'Hủy follow'));
+                                                    } else {
+                                                      return const Center(
+                                                          child: Text(
+                                                              'Follow'));
+                                                    }
+                                                  }
+                                                },
+                                              );
+                                            }
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
+                          )
+                        : Container(),
                   );
                 },
               ),

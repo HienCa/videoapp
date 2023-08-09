@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 import 'package:videoapp/models/user.dart' as model;
 
@@ -28,7 +29,6 @@ class ProfileController extends GetxController {
       Get.snackbar('Upload Avatar', 'Bạn đã tải lên avatar thành công!');
     }
     _pickedImage = Rx<File?>(File(pickedImage!.path));
-    print("111111111111111111111111111111111111111111");
   }
 
   updateUserId(String uid) {
@@ -165,6 +165,12 @@ class ProfileController extends GetxController {
         'followers',
         (value) => (int.parse(value) + 1).toString(),
       );
+      Get.snackbar(
+        'THEO DÕI!',
+        'Bạn đã theo dõi người dùng này.',
+        backgroundColor: Colors.lightBlue, // Màu nền
+        colorText: Colors.white, // M
+      );
     } else {
       await firestore
           .collection('users')
@@ -182,8 +188,15 @@ class ProfileController extends GetxController {
         'followers',
         (value) => (int.parse(value) - 1).toString(),
       );
+      Get.snackbar(
+        'THEO DÕI!',
+        'Bạn đã hủy theo dõi người dùng này.',
+        backgroundColor: Colors.lightBlue, // Màu nền
+        colorText: Colors.white, // M
+      );
     }
     _user.value.update('isFollowing', (value) => !value);
+
     update();
   }
 
@@ -261,6 +274,12 @@ class ProfileController extends GetxController {
         });
       }
     }
+    Get.snackbar(
+      'KẾT BẠN!',
+      'Bạn đã thu hồi lời mời kết bạn!',
+      backgroundColor: Colors.lightBlue, // Màu nền
+      colorText: Colors.white, // M
+    );
     update();
   }
 
@@ -289,7 +308,12 @@ class ProfileController extends GetxController {
         }, SetOptions(merge: true));
       }
     }
-
+    Get.snackbar(
+      'KẾT BẠN!',
+      'Bạn đã gửi lời mời kết bạn thành công.',
+      backgroundColor: Colors.lightBlue, // Màu nền
+      colorText: Colors.white, // M
+    );
     update();
   }
 
@@ -319,12 +343,16 @@ class ProfileController extends GetxController {
           });
         }
       }
-      
     } catch (e) {
       print('Error accepting friend request: $e');
     }
+    Get.snackbar(
+      'HỦY KẾT BẠN!',
+      'Bạn đã hủy kết bạn thành công!',
+      backgroundColor: Colors.lightBlue, // Màu nền
+      colorText: Colors.white, // M
+    );
     update();
-
   }
 
   Future<String> _uploadToStorage(File image) async {
@@ -388,7 +416,12 @@ class ProfileController extends GetxController {
 
         print('Updated name for video with ID: $videoId');
       }
-
+      Get.snackbar(
+        'CẬP NHẬT TRANG CÁ NHÂN!',
+        'Bạn đã cập nhật thông tin thành công!',
+        backgroundColor: Colors.redAccent, // Màu nền
+        colorText: Colors.white, // M
+      );
       update();
     } on FirebaseAuthException catch (e) {
       Get.snackbar(

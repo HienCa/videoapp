@@ -27,9 +27,9 @@ class SearchControllerCustom extends GetxController {
     } else {
       _searchedUsers.bindStream(firestore
           .collection('users')
-          .where('name', isGreaterThanOrEqualTo: typedUser)
-          .where('name',
-              isLessThan: '${typedUser}z') // Adjust 'z' as needed for your data
+          .where('name'.toLowerCase(), isGreaterThanOrEqualTo: typedUser.toLowerCase())
+          .where('name'.toLowerCase(),
+              isLessThan: '${typedUser.toLowerCase()}z') // Adjust 'z' as needed for your data
           .snapshots()
           .map((QuerySnapshot query) {
         List<User> retVal = [];

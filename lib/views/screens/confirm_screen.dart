@@ -113,8 +113,12 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                       ),
                       ElevatedButton(
                         onPressed: _isLoading ? null : _uploadVideo,
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Colors.redAccent),
+                        ),
                         child: const Text(
-                          'Chia sẻ!',
+                          'CHIA SẺ!',
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.white,

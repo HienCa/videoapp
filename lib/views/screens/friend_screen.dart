@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 
 import '../../constants.dart';
 import '../../models/user.dart';
@@ -81,8 +82,14 @@ class _FriendScreenState extends State<FriendScreen> {
         fetchReceivedFriendRequests();
         fetchFriends();
       }); // Gọi setState để rebuild giao diện với danh sách rỗng
+      Get.snackbar(
+        'KẾT BẠN!',
+        'Chúc mừng, hai bạn giờ đã là bạn bè.',
+        backgroundColor: Colors.lightBlue, // Màu nền
+        colorText: Colors.white, // M
+      );
     } catch (e) {
-      print('Error accepting friend request: $e');
+      // print('Error accepting friend request: $e');
     }
   }
 
@@ -102,7 +109,7 @@ class _FriendScreenState extends State<FriendScreen> {
         fetchFriends();
       }); // Gọi setState để rebuild giao diện với danh sách rỗng
     } catch (e) {
-      print('Error accepting friend request: $e');
+      // print('Error accepting friend request: $e');
     }
   }
 
@@ -136,8 +143,14 @@ class _FriendScreenState extends State<FriendScreen> {
         fetchFriends();
         fetchReceivedFriendRequests();
       });
+      Get.snackbar(
+        'KẾT BẠN!',
+        'Bạn đã hủy kết bạn thành công.',
+        backgroundColor: Colors.lightBlue, // Màu nền
+        colorText: Colors.white, // M
+      );
     } catch (e) {
-      print('Error accepting friend request: $e');
+      // print('Error accepting friend request: $e');
     }
   }
 
@@ -183,7 +196,7 @@ class _FriendScreenState extends State<FriendScreen> {
         setState(() {}); // Gọi setState để rebuild giao diện với danh sách rỗng
       }
     } catch (e) {
-      print('Error fetching received friend requests: $e');
+      // print('Error fetching received friend requests: $e');
     }
   }
 
@@ -228,7 +241,7 @@ class _FriendScreenState extends State<FriendScreen> {
         setState(() {}); // Gọi setState để rebuild giao diện với danh sách rỗng
       }
     } catch (e) {
-      print('Error fetching received friend requests: $e');
+      // print('Error fetching received friend requests: $e');
     }
   }
 
@@ -358,8 +371,8 @@ class _FriendScreenState extends State<FriendScreen> {
               child: TextButton(
                 onPressed: () {
                   // cancelFriend(friendsList[index].uid);
-                  showCupertinoDialog(friendsList[index].name, friendsList[index].uid);
-                  
+                  showCupertinoDialog(
+                      friendsList[index].name, friendsList[index].uid);
                 },
                 child: const Text(
                   'Hủy kết bạn',

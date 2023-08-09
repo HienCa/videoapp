@@ -82,6 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           case MenuOptions.option2:
             break;
           case MenuOptions.option3:
+            profileController.updateUserId('');
             authController.signOut();
             break;
         }
@@ -137,6 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Icons.person_add_alt_1_outlined,
                 color: Colors.black54,
               ),
+              title: const Center(child: Text('THÔNG TIN CÁ NHÂN', style:TextStyle(color:Colors.redAccent, fontWeight: FontWeight.bold))),
               actions: <Widget>[
                 IconButton(
                   icon: const Icon(Icons.menu,
@@ -443,7 +445,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       onTap: () {
                                         if (widget.uid ==
                                             authController.user.uid) {
+                                          profileController.updateUserId(
+                                              '');
                                           authController.signOut();
+
                                         } else {
                                           controller.followUser();
                                         }

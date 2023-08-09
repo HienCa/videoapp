@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:videoapp/constants.dart';
 import 'package:videoapp/models/video.dart';
@@ -66,6 +67,12 @@ class UploadVideoController extends GetxController {
             video.toJson(),
           );
       Get.back();
+      Get.snackbar(
+          'THÀNH CÔNG!',
+          'Bạn đã tải lên video thành công!',
+          backgroundColor: Colors.lightBlue, // Màu nền
+          colorText: Colors.white, // M
+        );
     } catch (e) {
       Get.snackbar(
         'Error Uploading Video',

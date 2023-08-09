@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:videoapp/constants.dart';
 import 'package:videoapp/views/screens/auth/signup_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../controllers/profile_controller.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final ProfileController profileController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -85,11 +89,9 @@ class LoginScreen extends StatelessWidget {
                   ),
                   label:
                       Text("Mật khẩu", style: TextStyle(color: Colors.black)),
-                  
                   hintStyle: TextStyle(
                       fontWeight: FontWeight.w300, color: Colors.grey),
                 ),
-                
               ),
             ),
             const SizedBox(
@@ -105,10 +107,13 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               child: InkWell(
-                onTap: () => authController.loginUser(
-                  _emailController.text,
-                  _passwordController.text,
-                ),
+                onTap: () => {
+                  authController.loginUser(
+                    _emailController.text,
+                    _passwordController.text,
+                  ),
+                  profileController.updateUserId(authController.user.uid)// update current user
+                },
                 child: const Center(
                   child: Text(
                     'ĐĂNG NHẬP',
@@ -126,11 +131,10 @@ class LoginScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                
                 InkWell(
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => SignupScreen(),
+                      builder: (context) => const SignupScreen(),
                     ),
                   ),
                   child: const Text(
@@ -141,7 +145,7 @@ class LoginScreen extends StatelessWidget {
                 InkWell(
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => SignupScreen(),
+                      builder: (context) => const SignupScreen(),
                     ),
                   ),
                   child: Text(
