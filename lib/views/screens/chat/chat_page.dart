@@ -30,16 +30,27 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(child: buildMessageList()),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          '@${widget.receiverUserName}',
+          style: const TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(child: buildMessageList()),
 
-        //user input
-        buildMessageInput(),
-        const SizedBox(
-          height: 25,
-        )
-      ],
+          //user input
+          buildMessageInput(),
+          const SizedBox(
+            height: 25,
+          )
+        ],
+      ),
     );
   }
 
@@ -76,14 +87,28 @@ class _ChatPageState extends State<ChatPage> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: (data['senderId'] == authController.user.uid)
-              ? CrossAxisAlignment.end
-              : CrossAxisAlignment.start,
+              ? CrossAxisAlignment.start
+              : CrossAxisAlignment.end,
           children: [
-            Text(data['senderName']),
-            const SizedBox(
-              height: 5,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  backgroundImage: NetworkImage(
+                    data['senderprofilePhoto'],
+                  ),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                ChatBubble(message: data['message']),
+              ],
+              
             ),
-            ChatBubble(message: data['message']),
+            Text(
+              data['senderName'],
+              style: const TextStyle(color: Colors.redAccent),
+            ),
           ],
         ),
       ),
@@ -94,14 +119,40 @@ class _ChatPageState extends State<ChatPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
               child: TextField(
             controller: messageController,
             obscureText: false,
+            style: const TextStyle(color: textColor),
+            decoration: const InputDecoration(
+              border: InputBorder.none, // Remove the default border
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 1, color: Colors.redAccent),
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+              ),
+              labelStyle: TextStyle(color: Colors.redAccent),
+              labelText: "Cùng nhau trò chuyện nào",
+              hintStyle:
+                  TextStyle(fontWeight: FontWeight.w300, color: Colors.grey),
+            ),
           )),
-          IconButton(
-              onPressed: sendMessage, icon: const Icon(Icons.arrow_upward)),
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.redAccent,
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            child: IconButton(
+                onPressed: sendMessage,
+                icon: const Icon(
+                  Icons.arrow_upward,
+                  color: Colors.white,
+                )),
+          ),
         ],
       ),
     );

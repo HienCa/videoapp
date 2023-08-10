@@ -16,14 +16,25 @@ class ChatService extends ChangeNotifier {
     DocumentSnapshot userDoc =
         await firestore.collection('users').doc(authController.user.uid).get();
     final userData = userDoc.data()! as dynamic;
-    String name = userData?['name'];
-    final String currentUserName = name;
+    String currentUserName = userData?['name'];
+    String senderprofilePhoto = userData?['profilePhoto'];
+
+    //get target user info
+    DocumentSnapshot targetuserDoc =
+        await firestore.collection('users').doc(receierId).get();
+    final targetuserData = targetuserDoc.data()! as dynamic;
+    String receierName = targetuserData?['name'];
+    String receierprofilePhoto = targetuserData?['profilePhoto'];
+
     final Timestamp timestamp = Timestamp.now();
     //create a new message
     Message newMessage = Message(
         senderId: currentUserId,
         senderName: currentUserName,
+        senderprofilePhoto: senderprofilePhoto,
         receierId: receierId,
+        receierName: receierName,
+        receierprofilePhoto: receierprofilePhoto,
         message: message,
         timestamp: timestamp);
 

@@ -6,6 +6,8 @@ import 'package:videoapp/models/user.dart';
 import 'package:videoapp/views/screens/profile_screen.dart';
 import 'package:videoapp/constants.dart';
 
+import 'chat/chat_page.dart';
+
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
 
@@ -144,7 +146,7 @@ class _SearchScreenState extends State<SearchScreen> {
     Navigator.pop(context);
   }
 
-  void _showSimpleDialog(String uid) {
+  void _showSimpleDialog(String uid, String name) {
     showDialog(
         context: context,
         builder: (context) {
@@ -189,6 +191,30 @@ class _SearchScreenState extends State<SearchScreen> {
                           ))),
                     )
                   : const SimpleDialogOption(),
+              const Divider(
+                color: textColor,
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  _dismissDialog();
+                },
+                child: InkWell(
+                    onTap: () => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChatPage(
+                                      receiverUserName: name,
+                                      receierUserId: uid,
+                                    )),
+                          )
+                        },
+                    child: const Center(
+                        child: Text(
+                      'Nhắn tin',
+                      style: TextStyle(fontSize: 20, color: textColor),
+                    ))),
+              ),
               const Divider(
                 color: textColor,
               ),
@@ -255,7 +281,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         builder: (context) => ProfileScreen(uid: user.uid),
                       ),
                     ),
-                    onLongPress: () => _showSimpleDialog(user.uid),
+                    onLongPress: () => _showSimpleDialog(user.uid, user.name),
                     child: user.uid != authController.user.uid
                         ? ListTile(
                             leading: CircleAvatar(
@@ -339,8 +365,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                                               'Hủy follow'));
                                                     } else {
                                                       return const Center(
-                                                          child: Text(
-                                                              'Follow'));
+                                                          child:
+                                                              Text('Follow'));
                                                     }
                                                   }
                                                 },
