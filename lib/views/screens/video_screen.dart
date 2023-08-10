@@ -81,6 +81,7 @@ class VideoScreen extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
+        
         body: Obx(() {
           return PageView.builder(
             itemCount: videoController.videoList.length,

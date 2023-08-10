@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
             label: '',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.message, size: 30),
+            icon: Icon(Icons.people, size: 30),
             label: 'Bạn bè',
           ),
           const BottomNavigationBarItem(

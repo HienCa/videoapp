@@ -255,13 +255,15 @@ class _FriendScreenState extends State<FriendScreen> {
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.redAccent,
-            title: const Center(child: Text('DANH SÁCH KẾT BẠN')),
+            title: const Center(child: Text('DANH SÁCH KẾT BẠN',style: TextStyle(fontWeight: FontWeight.bold)), ),
             bottom: const TabBar(
               indicatorColor: Colors.white,
               
               tabs: [
                 Tab(text: 'Bạn bè'),
                 Tab(text: 'Lời mời kết bạn'),
+                // Tab(text: 'Đang theo dõi'),
+                // Tab(text: 'Người theo dõi'),
               ],
             ),
           ),
@@ -274,6 +276,8 @@ class _FriendScreenState extends State<FriendScreen> {
                 buildFriendList(),
                 // Nội dung cho tab 'Lời mời'
                 buildFriendRequestList(),
+                // Text(''),
+                // Text(''),
               ],
             ),
           ),
