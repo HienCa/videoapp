@@ -5,6 +5,8 @@ import 'package:videoapp/constants.dart';
 import 'package:videoapp/views/widgets/chat_bubble.dart';
 
 import '../../../controllers/chat_service_controller.dart';
+// ignore: depend_on_referenced_packages
+import 'package:intl/intl.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage(
@@ -32,13 +34,38 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.redAccent,
         title: Text(
           '@${widget.receiverUserName}',
           style: const TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold),
+              color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
         ),
+        actions: [
+          Row(
+            children: [
+              InkWell(
+                onTap: () => {},
+                child: const Icon(
+                  Icons.call,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(
+                width: 30,
+              ),
+              InkWell(
+                onTap: () => {},
+                child: const Icon(
+                  Icons.videocam,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(
+                width: 20,
+              ),
+            ],
+          )
+        ],
       ),
       body: Column(
         children: [
@@ -87,28 +114,70 @@ class _ChatPageState extends State<ChatPage> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: (data['senderId'] == authController.user.uid)
-              ? CrossAxisAlignment.start
-              : CrossAxisAlignment.end,
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    data['senderprofilePhoto'],
-                  ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                ChatBubble(message: data['message']),
-              ],
-              
+            SingleChildScrollView(
+              child: Column(
+                children: data['senderId'] != authController.user.uid
+                    ? [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(data['senderprofilePhoto']),
+                            ),
+                            const SizedBox(width: 5),
+                            ChatBubble(message: data['message'], color: const Color.fromARGB(255, 152, 154, 155),),
+                          ],
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.only(left: 45),
+                                child: Text(
+                                  DateFormat('dd/MM/yyy HH:mm')
+                                      .format(data['timestamp'].toDate()),
+                                  style: const TextStyle(
+                                      color: Colors.grey, fontSize: 10),
+                                ),
+                              ),
+                            ])
+                      ]
+                    : [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            ChatBubble(message: data['message'],color: Colors.lightBlue,),
+                            const SizedBox(width: 5),
+                            CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(data['senderprofilePhoto']),
+                            ),
+                          ],
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.only(right: 45),
+                                child: Text(
+                                  DateFormat('dd/MM/yyy HH:mm')
+                                      .format(data['timestamp'].toDate()),
+                                  style: const TextStyle(
+                                      color: Colors.grey, fontSize: 10),
+                                ),
+                              ),
+                            ])
+                      ],
+              ),
             ),
-            Text(
-              data['senderName'],
-              style: const TextStyle(color: Colors.redAccent),
-            ),
+            // Text(
+            //   data['senderName'],
+            //   style: const TextStyle(color: Colors.redAccent),
+            // ),
           ],
         ),
       ),
@@ -121,25 +190,33 @@ class _ChatPageState extends State<ChatPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // CircleAvatar(
+          //   backgroundImage: NetworkImage(
+          //     senderprofilePhoto,
+          //   ),
+          // ),
+          const SizedBox(
+            width: 5,
+          ),
           Expanded(
               child: TextField(
             controller: messageController,
             obscureText: false,
             style: const TextStyle(color: textColor),
             decoration: const InputDecoration(
-              border: InputBorder.none, // Remove the default border
+              border: OutlineInputBorder(),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(width: 1, color: Colors.redAccent),
                 borderRadius: BorderRadius.all(Radius.circular(5)),
               ),
               labelStyle: TextStyle(color: Colors.redAccent),
-              labelText: "Cùng nhau trò chuyện nào",
+              labelText: "Cùng nhau trò chuyện nào!!!",
               hintStyle:
                   TextStyle(fontWeight: FontWeight.w300, color: Colors.grey),
             ),
           )),
           const SizedBox(
-            height: 10,
+            width: 10,
           ),
           Container(
             decoration: const BoxDecoration(

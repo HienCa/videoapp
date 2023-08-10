@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:videoapp/views/screens/chat/chat_page.dart';
+import 'package:videoapp/views/screens/profile_screen.dart';
 
 import '../../constants.dart';
 import '../../models/user.dart';
@@ -252,8 +254,11 @@ class _FriendScreenState extends State<FriendScreen> {
         length: 2, // Số lượng tab
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Danh sách kết bạn'),
+            backgroundColor: Colors.redAccent,
+            title: const Center(child: Text('DANH SÁCH KẾT BẠN')),
             bottom: const TabBar(
+              indicatorColor: Colors.white,
+              
               tabs: [
                 Tab(text: 'Bạn bè'),
                 Tab(text: 'Lời mời kết bạn'),
@@ -263,6 +268,7 @@ class _FriendScreenState extends State<FriendScreen> {
           body: Padding(
             padding: const EdgeInsets.all(1.0),
             child: TabBarView(
+              
               children: [
                 // Nội dung cho tab 'Đã kết bạn'
                 buildFriendList(),
@@ -285,15 +291,35 @@ class _FriendScreenState extends State<FriendScreen> {
         return Padding(
           padding: const EdgeInsets.only(top: 20),
           child: ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(
-                usersInfo[index].profilePhoto,
+            leading: InkWell(
+              onTap: () => {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ProfileScreen(uid: usersInfo[index].uid),
+                  ),
+                )
+              },
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(
+                  usersInfo[index].profilePhoto,
+                ),
               ),
             ),
-            title: Text(
-              usersInfo[index].name,
-              style: const TextStyle(
-                  fontSize: 18, color: textColor, fontWeight: FontWeight.bold),
+            title: InkWell(
+              onTap: () => {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ChatPage(receiverUserName: usersInfo[index].name, receierUserId: usersInfo[index].uid),
+                  ),
+                )
+              },
+              child: Text(
+                usersInfo[index].name,
+                style: const TextStyle(
+                    fontSize: 18,
+                    color: textColor,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
             // ignore: sized_box_for_whitespace
             trailing: Container(
@@ -351,15 +377,33 @@ class _FriendScreenState extends State<FriendScreen> {
         return Padding(
           padding: const EdgeInsets.only(top: 20),
           child: ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(
-                friendsList[index].profilePhoto,
+            leading: InkWell(
+              onTap: () => {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ProfileScreen(uid: friendsList[index].uid),
+                  ),
+                )
+              },
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(
+                  friendsList[index].profilePhoto,
+                ),
               ),
             ),
-            title: Text(
-              friendsList[index].name,
-              style: const TextStyle(
-                  fontSize: 18, color: textColor, fontWeight: FontWeight.bold),
+            title: InkWell(
+              onTap: () => {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ChatPage(receiverUserName: friendsList[index].name, receierUserId: friendsList[index].uid),
+                  ),
+                )
+              },
+              child: Text(
+                friendsList[index].name,
+                style: const TextStyle(
+                    fontSize: 18, color: textColor, fontWeight: FontWeight.bold),
+              ),
             ),
             // ignore: sized_box_for_whitespace
             trailing: Container(
